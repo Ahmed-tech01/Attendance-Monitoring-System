@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Panel - Attendance Monitoring System</title>
+  <link rel="stylesheet" href="./css/Style.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>TEC Attendance Monitoring</h2>
+<form id="submit-to-google-sheet">
+  <label>Project Name</label>
+  <input type="text" name="project_name" required>
+
+  <label>Project Number</label>
+  <input type="text" name="project_number" required>
+
+  <label>Person Name</label>
+  <input type="text" name="person_name" required>
+
+  <label>Supervisor Name</label>
+  <input type="text" name="supervisor_name" required>
+
+  <label>Contact Persons</label>
+  <input type="text" name="contact_persons" required>
+
+  <label>City</label>
+  <input type="text" name="city" required>
+
+  <label>Province</label>
+  <input type="text" name="province" required>
+
+  <label>Start Time</label>
+  <input type="time" name="start_time" required>
+
+  <label>End Time</label>
+  <input type="time" name="end_time" required>
+
+  <label>TEC Entry Time</label>
+  <input type="time" name="tec_entry_time" required>
+
+  <label>TEC Exit Time</label>
+  <input type="time" name="tec_exit_time" required>
+
+  <label>Get Location</label>
+  <button type="button" onclick="getLocation()">Get Coordinates</button>
+  <input type="text" id="location" name="location" readonly required>
+
+  <button type="submit">Submit</button>
+</form>
+
+  </div>
+
+ <script>
+  const scriptURL = 'https://script.google.com/macros/s/AKfycby8slb0X8rCyZbr_R5Roxg0_yWiCSvv8maLA-F8M_2nQX8ZGqhyvxD4HYDieMGQxY61/exec';
+
+  const form = document.getElementById('submit-to-google-sheet');
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+      .then(response => {
+        alert("✅ Data successfully submitted!");
+        form.reset(); // optional: clears form after submit
+      })
+      .catch(error => alert("❌ Submission failed: " + error.message));
+  });
+
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const coords = position.coords.latitude + ", " + position.coords.longitude;
+          document.getElementById("location").value = coords;
+        },
+        (error) => {
+          alert("⚠️ Error getting location: " + error.message);
+        }
+      );
+    } else {
+      alert("❌ Geolocation is not supported by this browser.");
+    }
+  }
+</script>
+
+
+</body>
+</html>

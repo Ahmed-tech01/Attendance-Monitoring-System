@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - TEC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./css/Style.css" />
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <div class="min-h-screen p-6">
+    <header class="mb-6">
+      <h1 class="text-3xl font-bold text-blue-800">TEC Admin Panel</h1>
+      <p class="text-gray-600">Manage user accounts for attendance system</p>
+    </header>
+
+    <!-- Add User Form -->
+    <section class="bg-white p-6 rounded-lg shadow-md mb-10">
+      <h2 class="text-xl font-semibold mb-4">➕ Add New User</h2>
+      <form class="grid grid-cols-1 md:grid-cols-3 gap-4" onsubmit="addUser(event)">
+        <div>
+          <label class="block text-gray-700 font-medium">User ID</label>
+          <input type="text" id="userId" required class="w-full px-4 py-2 border rounded-lg" placeholder="e.g. TEC001" />
+        </div>
+        <div>
+          <label class="block text-gray-700 font-medium">User Name</label>
+          <input type="text" id="userName" required class="w-full px-4 py-2 border rounded-lg" placeholder="Full name" />
+        </div>
+        <div>
+          <label class="block text-gray-700 font-medium">Role</label>
+          <select id="userRole" class="w-full px-4 py-2 border rounded-lg">
+            <option>Employee</option>
+            <option>Supervisor</option>
+          </select>
+        </div>
+        <div class="md:col-span-3 text-right">
+          <button type="submit" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+            Add User
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- User List Table -->
+    <section class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-semibold mb-4">📋 Registered Users</h2>
+      <div class="overflow-auto">
+        <table class="w-full table-auto text-left border-collapse">
+          <thead class="bg-blue-50 text-blue-800">
+            <tr>
+              <th class="px-4 py-2 border">#</th>
+              <th class="px-4 py-2 border">User ID</th>
+              <th class="px-4 py-2 border">Name</th>
+              <th class="px-4 py-2 border">Role</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody">
+            <!-- JS will inject rows here -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+const scriptURL = "https://script.google.com/macros/s/AKfycby8slb0X8rCyZbr_R5Roxg0_yWiCSvv8maLA-F8M_2nQX8ZGqhyvxD4HYDieMGQxY61/exec";
+
+document.getElementById("userForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const formData = {
+    projectName: document.getElementById("projectName").value,
+    projectNumber: document.getElementById("projectNumber").value,
+    personName: document.getElementById("personName").value,
+    supervisorName: document.getElementById("supervisorName").value,
+    contactPersons: document.getElementById("contactPersons").value,
+    city: document.getElementById("city").value,
+    province: document.getElementById("province").value,
+    startTime: document.getElementById("startTime").value,
+    endTime: document.getElementById("endTime").value,
+    entryTime: document.getElementById("entryTime").value,
+    exitTime: document.getElementById("exitTime").value,
+    location: document.getElementById("location").value,
+  };
+
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify(formData),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => alert("Data submitted successfully!"))
+  .catch(error => alert("Error submitting data!"));
+});
+
+  </script>
+
+</body>
+</html>

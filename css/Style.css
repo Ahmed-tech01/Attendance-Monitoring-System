@@ -1,0 +1,139 @@
+/* ===== TEC Attendance System — Custom Styles ===== */
+
+/* Font smoothing for all text */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom TEC blue brand color */
+.bg-tec-blue {
+  background-color: #1e3a8a; /* Tailwind blue-900 */
+}
+
+.text-tec-blue {
+  color: #1e3a8a;
+}
+
+/* Button hover transition */
+button {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  transform: scale(1.02);
+}
+
+/* Shadow effect for cards */
+.card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 0.75rem;
+  background-color: white;
+}
+
+/* Table hover */
+table tbody tr:hover {
+  background-color: #f1f5f9; /* Tailwind slate-100 */
+}
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: linear-gradient(120deg, #e0f7fa, #ffffff);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Form container */
+.form-container {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+}
+
+.form-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #006064;
+}
+
+/* Labels and Inputs */
+form label {
+  display: block;
+  margin-top: 15px;
+  color: #004d40;
+  font-weight: 600;
+}
+
+form input[type="text"],
+form input[type="time"],
+form input[type="password"],
+form input[type="email"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s;
+}
+
+form input:focus {
+  border-color: #26a69a;
+  outline: none;
+}
+
+/* Buttons */
+form button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background-color: #00695c;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+form button:hover {
+  background-color: #004d40;
+}
+
+/* Login Page Link */
+.login-switch {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.login-switch a {
+  color: #00796b;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-switch a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media screen and (max-width: 600px) {
+  .form-container {
+    padding: 20px;
+  }
+
+  form button {
+    font-size: 14px;
+  }
+}
