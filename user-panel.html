@@ -11,7 +11,7 @@
     <h2>TEC Attendance Monitoring</h2>
 <form id="submit-to-google-sheet">
   <label>Project Name</label>
-  <input type="text" name="project_name" required>
+  <input type="text" name="Project Name" required>
 
   <label>Project Number</label>
   <input type="text" name="project_number" required>
@@ -49,23 +49,30 @@
 
   <button type="submit">Submit</button>
 </form>
-
+<p id="success-message" style="color: green;"></p>
   </div>
 
  <script>
   const scriptURL = 'https://script.google.com/macros/s/AKfycbwYlF64QCzlDgnEkppSCwBvF9lMozHcX7hUAQnjUnbAC93srKDP95__vRiTyYPBhAZx/exec';
-
-  const form = document.getElementById('submit-to-google-sheet');
+  const form = document.getElementById('user-form'); // make sure your form has this ID
+  const message = document.getElementById('success-message');
 
   form.addEventListener('submit', e => {
     e.preventDefault();
+    const formData = new FormData(form);
 
-    fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-      .then(response => {
-        alert("✅ Data successfully submitted!");
-        form.reset(); // optional: clears form after submit
-      })
-      .catch(error => alert("❌ Submission failed: " + error.message));
+    fetch(scriptURL, {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      message.textContent = "✅ Form submitted successfully!";
+      form.reset();
+    })
+    .catch(error => {
+      message.textContent = "❌ Error submitting form. Try again.";
+      console.error("Error!", error);
+    });
   });
 
   function getLocation() {
@@ -84,6 +91,7 @@
     }
   }
 </script>
+
 
 
 </body>
