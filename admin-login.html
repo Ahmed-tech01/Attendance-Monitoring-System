@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Login - Attendance System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
   <link rel="stylesheet" href="./css/Style.css">
 </head>
 <body>
@@ -11,34 +11,45 @@
     <h2>Admin Login</h2>
     <form id="admin-login-form">
       <label>Username</label>
-      <input type="text" id="username" required>
+      <input type="text" name="username" required>
 
       <label>Password</label>
-      <input type="password" id="password" required>
+      <input type="password" name="password" required>
 
       <button type="submit">Login</button>
     </form>
-    <p id="error-message"></p>
+<p style="margin-top: 15px;">
+  Not an admin? <a href="user-login.html">Go to User Login</a>
+</p>
+
   </div>
 
   <script>
-    const admins = {
-      "ahmed121": "aH03052004",
-      "ahmed122": "aH03052005",
-      "ahmed123": "aH03052006",
-      "ahmed124": "aH03052007"
-    };
+    const adminForm = document.getElementById("admin-login-form");
+    const adminMsg = document.getElementById("admin-login-msg");
 
-    document.getElementById("admin-login-form").addEventListener("submit", function (e) {
+    const adminCredentials = [
+      { username: "ahmed121", password: "aH03052004" },
+      { username: "ahmed122", password: "aH03052005" },
+      { username: "ahmed123", password: "aH03052006" },
+      { username: "ahmed124", password: "aH03052007" }
+    ];
+
+    adminForm.addEventListener("submit", function(e) {
       e.preventDefault();
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
 
-      if (admins[username] && admins[username] === password) {
-        localStorage.setItem("adminLoggedIn", "true");
+      const username = adminForm.username.value.trim();
+      const password = adminForm.password.value.trim();
+
+      const match = adminCredentials.find(admin =>
+        admin.username === username && admin.password === password
+      );
+
+      if (match) {
+        localStorage.setItem("userRole", "admin");
         window.location.href = "admin-panel.html";
       } else {
-        document.getElementById("error-message").textContent = "❌ Invalid credentials!";
+        adminMsg.textContent = "❌ Invalid admin credentials.";
       }
     });
   </script>
