@@ -3,55 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Login - TEC</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/styles.css" />
+  <title>Admin Login - Attendance System</title>
+  <link rel="stylesheet" href="./css/Style.css">
 </head>
-<body class="bg-gray-100 font-sans">
+<body>
+  <div class="form-container">
+    <h2>Admin Login</h2>
+    <form id="admin-login-form">
+      <label>Username</label>
+      <input type="text" id="username" required>
 
-  <div class="min-h-screen flex items-center justify-center">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-      <div class="text-center mb-6">
-        <h1 class="text-3xl font-bold text-blue-800">TEC Admin Login</h1>
-        <p class="text-gray-600">Secure access to admin panel</p>
-      </div>
+      <label>Password</label>
+      <input type="password" id="password" required>
 
-      <form onsubmit="adminLogin(event)" class="space-y-4">
-        <div>
-          <label class="block text-gray-700 font-medium">Admin ID</label>
-          <input type="text" id="adminId" required class="w-full px-4 py-2 border rounded-lg" placeholder="Enter your admin ID" />
-        </div>
-
-        <div>
-          <label class="block text-gray-700 font-medium">Password</label>
-          <input type="password" id="adminPassword" required class="w-full px-4 py-2 border rounded-lg" placeholder="Enter your password" />
-        </div>
-
-        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
-          Login as Admin
-        </button>
-      </form>
-
-      <p class="mt-4 text-center text-sm text-gray-500">
-        <a href="index.html" class="text-blue-600 hover:underline">If you're a user, click here to log in</a>
-      </p>
-    </div>
+      <button type="submit">Login</button>
+    </form>
+    <p id="error-message"></p>
   </div>
 
   <script>
-    function adminLogin(event) {
-      event.preventDefault();
-      const adminId = document.getElementById("adminId").value;
-      const adminPassword = document.getElementById("adminPassword").value;
+    const admins = {
+      "ahmed121": "aH03052004",
+      "ahmed122": "aH03052005",
+      "ahmed123": "aH03052006",
+      "ahmed124": "aH03052007"
+    };
 
-      // Placeholder validation (replace with real check)
-      if (adminId === "admin" && adminPassword === "1234") {
+    document.getElementById("admin-login-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      if (admins[username] && admins[username] === password) {
+        localStorage.setItem("adminLoggedIn", "true");
         window.location.href = "admin-panel.html";
       } else {
-        alert("Invalid admin credentials");
+        document.getElementById("error-message").textContent = "❌ Invalid credentials!";
       }
-    }
+    });
   </script>
-
 </body>
 </html>

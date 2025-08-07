@@ -2,100 +2,170 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel - TEC</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="./css/Style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel - TEC Attendance</title>
+  <link rel="stylesheet" href="./css/Style.css">
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body>
+  <div class="form-container">
+    <h2>Admin Dashboard - TEC Attendance</h2>
 
-  <div class="min-h-screen p-6">
-    <header class="mb-6">
-      <h1 class="text-3xl font-bold text-blue-800">TEC Admin Panel</h1>
-      <p class="text-gray-600">Manage user accounts for attendance system</p>
-    </header>
+    <button onclick="downloadCSV()">📥 Download Attendance Data</button>
+    <div class="form-section">
+  <h3>Create New User Account</h3>
+  <form id="create-user-form">
+    <label>Username</label>
+    <input type="text" name="Username" required>
 
-    <!-- Add User Form -->
-    <section class="bg-white p-6 rounded-lg shadow-md mb-10">
-      <h2 class="text-xl font-semibold mb-4">➕ Add New User</h2>
-      <form class="grid grid-cols-1 md:grid-cols-3 gap-4" onsubmit="addUser(event)">
-        <div>
-          <label class="block text-gray-700 font-medium">User ID</label>
-          <input type="text" id="userId" required class="w-full px-4 py-2 border rounded-lg" placeholder="e.g. TEC001" />
-        </div>
-        <div>
-          <label class="block text-gray-700 font-medium">User Name</label>
-          <input type="text" id="userName" required class="w-full px-4 py-2 border rounded-lg" placeholder="Full name" />
-        </div>
-        <div>
-          <label class="block text-gray-700 font-medium">Role</label>
-          <select id="userRole" class="w-full px-4 py-2 border rounded-lg">
-            <option>Employee</option>
-            <option>Supervisor</option>
-          </select>
-        </div>
-        <div class="md:col-span-3 text-right">
-          <button type="submit" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
-            Add User
-          </button>
-        </div>
-      </form>
-    </section>
+    <label>Password</label>
+    <input type="password" name="Password" required>
 
-    <!-- User List Table -->
-    <section class="bg-white p-6 rounded-lg shadow-md">
-      <h2 class="text-xl font-semibold mb-4">📋 Registered Users</h2>
-      <div class="overflow-auto">
-        <table class="w-full table-auto text-left border-collapse">
-          <thead class="bg-blue-50 text-blue-800">
-            <tr>
-              <th class="px-4 py-2 border">#</th>
-              <th class="px-4 py-2 border">User ID</th>
-              <th class="px-4 py-2 border">Name</th>
-              <th class="px-4 py-2 border">Role</th>
-            </tr>
-          </thead>
-          <tbody id="userTableBody">
-            <!-- JS will inject rows here -->
-          </tbody>
-        </table>
-      </div>
-    </section>
+    <button type="submit">Create Account</button>
+  </form>
+  <p id="account-message"></p>
+</div>
+
+    <button onclick="showSubmissions()">📄 View Attendance Submissions</button>
+    <button onclick="logout()">🔓 Logout</button>
+
+    <div id="usersTableContainer" class="hidden">
+      <h3>Registered Users</h3>
+      <table id="usersTable">
+        <thead>
+          <tr><th>UserID</th><th>Username</th><th>Role</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div id="submissionsTableContainer" class="hidden">
+      <h3>User Attendance Submissions</h3>
+      <table id="submissionsTable">
+        <thead>
+          <tr><th>Person Name</th><th>Project</th><th>Supervisor</th><th>Start Time</th><th>End Time</th><th>Location</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <button id="downloadBtn">📤 Download Attendance Data (CSV)</button>
+<p id="download-status"></p>
+
   </div>
 
   <script>
-const scriptURL = "https://script.google.com/macros/s/AKfycby8slb0X8rCyZbr_R5Roxg0_yWiCSvv8maLA-F8M_2nQX8ZGqhyvxD4HYDieMGQxY61/exec";
-
-document.getElementById("userForm").addEventListener("submit", function(e) {
-  e.preventDefault();
-
-  const formData = {
-    projectName: document.getElementById("projectName").value,
-    projectNumber: document.getElementById("projectNumber").value,
-    personName: document.getElementById("personName").value,
-    supervisorName: document.getElementById("supervisorName").value,
-    contactPersons: document.getElementById("contactPersons").value,
-    city: document.getElementById("city").value,
-    province: document.getElementById("province").value,
-    startTime: document.getElementById("startTime").value,
-    endTime: document.getElementById("endTime").value,
-    entryTime: document.getElementById("entryTime").value,
-    exitTime: document.getElementById("exitTime").value,
-    location: document.getElementById("location").value,
-  };
-
-  fetch(scriptURL, {
-    method: 'POST',
-    body: JSON.stringify(formData),
-    headers: {
-      'Content-Type': 'application/json'
+    // Protect page
+    if (!localStorage.getItem("adminLoggedIn")) {
+      alert("Access denied. Login required.");
+      window.location.href = "adminLogin.html";
     }
-  })
-  .then(response => alert("Data submitted successfully!"))
-  .catch(error => alert("Error submitting data!"));
-});
 
+    function logout() {
+      localStorage.removeItem("adminLoggedIn");
+      window.location.href = "admin-login.html";
+    }
+
+    function downloadCSV() {
+      google.script.run.withSuccessHandler(function(url) {
+        window.open(url);
+      }).downloadAttendanceCSV();
+    }
+
+    function showUsers() {
+      document.getElementById("usersTableContainer").classList.remove("hidden");
+      google.script.run.withSuccessHandler(function(users) {
+        const tbody = document.querySelector("#usersTable tbody");
+        tbody.innerHTML = "";
+        users.forEach(row => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td>`;
+          tbody.appendChild(tr);
+        });
+      }).getRegisteredUsers();
+    }
+
+    function showSubmissions() {
+      document.getElementById("submissionsTableContainer").classList.remove("hidden");
+      google.script.run.withSuccessHandler(function(records) {
+        const tbody = document.querySelector("#submissionsTable tbody");
+        tbody.innerHTML = "";
+        records.forEach(row => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td>${row[5]}</td>`;
+          tbody.appendChild(tr);
+        });
+      }).getAttendanceSubmissions();
+    }
   </script>
+  <script>
+  const downloadBtn = document.getElementById('downloadBtn');
+  const downloadStatus = document.getElementById('download-status');
+
+  downloadBtn.addEventListener('click', () => {
+    downloadStatus.textContent = "⏳ Preparing download...";
+
+    // Replace with your deployed Apps Script web app URL
+    const downloadURL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?action=download';
+
+    fetch(downloadURL)
+      .then(res => res.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'AttendanceData.csv';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        downloadStatus.textContent = "✅ Download started!";
+      })
+      .catch(err => {
+        console.error('Error downloading:', err);
+        downloadStatus.textContent = "❌ Failed to download. Try again.";
+      });
+  });
+</script>
+<script>
+  const accountForm = document.getElementById("create-user-form");
+  const accountMsg = document.getElementById("account-message");
+
+  accountForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(accountForm);
+
+    fetch("https://script.google.com/macros/s/AKfycbw5uNOhsaJp3w3ZrA5aJItW-X3laz_6KpXXTs39UzWApAd9-4F0gCot38KmH_2MGzJZhw/exec", {
+      method: "POST",
+      body: formData
+    })
+    .then(res => res.text())
+    .then(response => {
+      accountMsg.textContent = "✅ Account created successfully!";
+      accountForm.reset();
+    })
+    .catch(error => {
+      accountMsg.textContent = "❌ Failed to create account.";
+      console.error("Error:", error);
+    });
+  });
+</script>
+
 
 </body>
 </html>
