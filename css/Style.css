@@ -138,15 +138,12 @@ form button:hover {
   }
 }
 .input-field {
-  width: 100%;
   padding: 10px;
-  margin-bottom: 15px;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-  background-color: #fff;
+  border-radius: 5px;
+  width: 100%;
+  margin-bottom: 15px;
 }
-
 select.input-field {
   appearance: none;
   -webkit-appearance: none;
