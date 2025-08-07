@@ -24,34 +24,36 @@
 
   </div>
 
-  <script>
-    const adminForm = document.getElementById("admin-login-form");
-    const adminMsg = document.getElementById("admin-login-msg");
+<script>
+  const adminForm = document.getElementById("admin-login-form");
+  const adminMsg = document.getElementById("admin-login-msg");
 
-    const adminCredentials = [
-      { username: "ahmed121", password: "aH03052004" },
-      { username: "ahmed122", password: "aH03052005" },
-      { username: "ahmed123", password: "aH03052006" },
-      { username: "ahmed124", password: "aH03052007" }
-    ];
+  const adminCredentials = [
+    { username: "ahmed121", password: "aH03052004" },
+    { username: "ahmed122", password: "aH03052005" },
+    { username: "ahmed123", password: "aH03052006" },
+    { username: "ahmed124", password: "aH03052007" }
+  ];
 
-    adminForm.addEventListener("submit", function(e) {
-      e.preventDefault();
+  adminForm.addEventListener("submit", function(e) {
+    e.preventDefault();
 
-      const username = adminForm.username.value.trim();
-      const password = adminForm.password.value.trim();
+    const username = adminForm.username.value.trim();
+    const password = adminForm.password.value.trim();
 
-      const match = adminCredentials.find(admin =>
-        admin.username === username && admin.password === password
-      );
+    const match = adminCredentials.find(admin =>
+      admin.username === username && admin.password === password
+    );
 
-      if (match) {
-        localStorage.setItem("userRole", "admin");
-        window.location.href = "admin-panel.html";
-      } else {
-        adminMsg.textContent = "❌ Invalid admin credentials.";
-      }
-    });
-  </script>
+    if (match) {
+      localStorage.setItem("userRole", "admin");
+      localStorage.setItem("adminLoggedIn", "true");
+      window.location.href = "admin-panel.html"; // ✅ correct redirect
+    } else {
+      adminMsg.textContent = "❌ Invalid admin credentials.";
+    }
+  });
+</script>
+
 </body>
 </html>
