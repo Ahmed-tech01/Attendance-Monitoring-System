@@ -199,6 +199,17 @@ tbody tr:hover {
     transform: translateY(0);
   }
 }
+/* Background image for User Panel */
+body {
+  background: url("../images/logo.jpg") no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  color: #333;
+}
 
 
 body::before {
@@ -473,8 +484,8 @@ body.admin-page {
   color: #333;
 
 
- background: url("../images/logo.jpg") no-repeat center center fixed;
-background-size: cover;
+  background: url("/images/logo.jpg") no-repeat center center fixed;
+  background-size: cover;
 }
 
 body.admin-page::before {
@@ -524,4 +535,9 @@ body.admin-page::before {
 #usersTable thead tr {
   background-color: #e61d2b;
   color: white;
+}
+body {
+  background: url('https://raw.githubusercontent.com/Ahmed-tech01/Attendance-Monitoring-System/main/images/logo.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: Arial, sans-serif;
 }
