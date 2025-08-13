@@ -1,58 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>User Login</title>
-  <link rel="stylesheet" href="./css/Style.css">
-</head>
-<body>
-  <div class="form-container">
-    <h2>User Login</h2>
-    <form id="user-login-form">
-      <label>Username</label>
-      <input type="text" name="username" required>
-      
-      <label>Password</label>
-      <input type="password" name="password" required>
-      
-      <button type="submit">Login</button>
-    </form>
-<p id="user-login-msg"></p>
-<p style="margin-top: 15px;">
-  Not a user? <a href="admin-login.html">Go to Admin Login</a>
-</p>
+<html>
+  <head>
+    <title>User Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./images/favicon_32.png"
+    />
+    <link rel="stylesheet" href="./css/Style.css" />
+  </head>
+  <body>
+    <div class="form-container">
+      <h2>Login to Your Account</h2>
+      <form id="loginForm">
+        <label for="loginUsername">Username</label>
+        <input type="text" id="loginUsername" name="username" required />
 
-  </div>
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" name="password" required />
 
-  <script>
-    const userForm = document.getElementById("user-login-form");
-    const userMsg = document.getElementById("user-login-msg");
+        <button type="submit">Login</button>
+      </form>
+      <div id="loginStatus" class="message"></div>
+      <p style="margin-top: 15px">
+        Not an User? <a href="admin-login.html">Go to Admin Login</a>
+      </p>
+    </div>
 
-    userForm.addEventListener("submit", function(e) {
-      e.preventDefault();
+    <script>
+      const SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbxgyl0UneWNJNtYKWdQFU0s7TBodPCNy04EHAXU2ctDt3DxRyH-3kOnQTFVY9kN45aZig/exec";
 
-      const username = userForm.username.value.trim();
-      const password = userForm.password.value.trim();
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
 
-      fetch("https://script.google.com/macros/s/AKfycbw5uNOhsaJp3w3ZrA5aJItW-X3laz_6KpXXTs39UzWApAd9-4F0gCot38KmH_2MGzJZhw/exec")
-        .then(res => res.json())
-        .then(data => {
-          const users = data.data;
-          const user = users.find(u => u.Username === username && u.Password === password);
-          
-          if (user) {
-            localStorage.setItem("userRole", "user");
-            window.location.href = "user-panel.html";
-          } else {
-            userMsg.textContent = "❌ Invalid username or password.";
-          }
-        })
-        .catch(error => {
-          console.error("Error:", error);
-          userMsg.textContent = "❌ Login failed.";
+          const form = event.target;
+          const formData = new FormData(form);
+          formData.append("action", "userLogin");
+
+          const statusDiv = document.getElementById("loginStatus");
+          statusDiv.textContent = "Logging in...";
+          statusDiv.classList.remove("success", "error");
+
+          fetch(SCRIPT_URL, {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              statusDiv.textContent = data.message;
+              if (data.status === "success") {
+                statusDiv.classList.add("success");
+                window.location.href = "user-panel.html";
+              } else {
+                statusDiv.classList.add("error");
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              statusDiv.textContent = "An unexpected error occurred.";
+              statusDiv.classList.add("error");
+            });
         });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>

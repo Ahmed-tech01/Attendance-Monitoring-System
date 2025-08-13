@@ -1,105 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>User Panel - Attendance Monitoring System</title>
-  <link rel="stylesheet" href="./css/Style.css">
-</head>
-<body>
-  <div class="form-container">
-    <h2>TEC Attendance Monitoring</h2>
-<form id="submit-to-google-sheet">
-  <label>Project Name</label>
-  <input type="text" name="Project Name" required>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Panel - Attendance Monitoring System</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./images/favicon_32.png"
+    />
+    <link rel="stylesheet" href="./css/Style.css" />
+  </head>
+  <body>
+    <div class="circular-bg"></div>
+    <div class="circular-bg-bottom"></div>
+    <div class="form-container">
+      <h2 class="panel-heading">
+        <img src="./images/logo.jpg" alt="TEC Logo" class="heading-logo" />TEC
+        Attendance Monitoring
+      </h2>
+      <form id="submit-to-google-sheet">
+        <label>Project Name</label>
+        <input type="text" name="Project Name" required />
 
-  <label>Project Number</label>
-  <input type="text" name="Project Number" required>
+        <label>Project Number</label>
+        <input type="text" name="Project Number" required />
 
-  <label>Person Name</label>
-  <input type="text" name="Person Name" required>
+        <label>Person Name</label>
+        <input type="text" name="Person Name" required />
 
-  <label>Supervisor Name</label>
-  <select name="Supervisor Name" class="input-field" required>
-    <option value="" disabled selected>Select Supervisor</option>
-    <option value="Mr. Ali">Mr. Ali</option>
-    <option value="Ms. Fatima">Ms. Fatima</option>
-    <option value="Engr. Hassan">Engr. Hassan</option>
-    <option value="Dr. Nida">Dr. Nida</option>
-  </select>
+        <label>Supervisor Name</label>
+        <select
+          name="Supervisor Name"
+          class="input-field"
+          id="supervisorDropdown"
+          required
+        >
+          <option value="" disabled selected>Loading Supervisors...</option>
+        </select>
 
-  <label>Contact Persons</label>
-  <input type="text" name="Contact Persons" required>
+        <label>Contact Persons</label>
+        <input type="text" name="Contact Persons" required />
 
-  <label>City</label>
-  <input type="text" name="City" required>
+        <label>City</label>
+        <input type="text" name="City" required />
 
-  <label>Province</label>
-  <input type="text" name="Province" required>
+        <label>Province</label>
+        <input type="text" name="Province" required />
 
-  <label>Start Time</label>
-  <input type="time" name="Start Time" required>
+        <label>Date</label>
+        <input type="date" name="Date" required />
+        <label>Start Time</label>
 
-  <label>End Time</label>
-  <input type="time" name="End Time" required>
+        <input type="time" name="Start Time" required />
 
-  <label>TEC Entry Time</label>
-  <input type="time" name="TEC Entry Time" required>
+        <label>End Time</label>
+        <input type="time" name="End Time" required />
 
-  <label>TEC Exit Time</label>
-  <input type="time" name="TEC Exit Time" required>
+        <label>TEC Entry Time</label>
+        <input type="time" name="TEC Entry Time" required />
 
-  <label>Get Location</label>
-  <button type="button" onclick="getLocation()">Get Coordinates</button>
-  <input type="text" id="location" name="Location" readonly required>
+        <label>TEC Exit Time</label>
+        <input type="time" name="TEC Exit Time" required />
 
-  <button type="submit">Submit</button>
-</form>
-<p id="success-message"></p>
+        <label>Get Location</label>
+        <button type="button" onclick="getLocation()">Get Coordinates</button>
+        <input type="text" id="location" name="Location" readonly required />
 
-  </div>
+        <button type="submit">Submit</button>
+      </form>
+      <p id="success-message"></p>
+      <button type="button" onclick="logout()">Logout</button>
+    </div>
 
- <script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbwA9TZgcT-8mCr0CTQvDTfXE9-PakdmNDQhNZayIcVxcS5Lbid4lge4XIGApPlkXm9u/exec';
-  const form = document.getElementById('submit-to-google-sheet');
-  const message = document.getElementById('success-message');
+    <script>
+      const SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbywyV4NsN6pSLhiJgFSKZQsmH3c6PNN7BQ8QSmAQLnQ-VAGUcvNN8H0OQymo0MTY4Q/exec";
 
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const formData = new FormData(form);
+      const form = document.getElementById("submit-to-google-sheet");
+      const message = document.getElementById("success-message");
+      const supervisorDropdown = document.getElementById("supervisorDropdown");
 
-    fetch(scriptURL, {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => {
-      message.textContent = "✅ Form submitted successfully!";
-      form.reset();
-    })
-    .catch(error => {
-      message.textContent = "❌ Error submitting form. Try again.";
-      console.error("Error!", error);
-    });
-  });
+      function populateSupervisorDropdown() {
+        const formData = new FormData();
+        formData.append("action", "getSupervisors");
 
-  function getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const coords = position.coords.latitude + ", " + position.coords.longitude;
-          document.getElementById("location").value = coords;
-        },
-        (error) => {
-          alert("⚠️ Error getting location: " + error.message);
+        fetch(SCRIPT_URL, {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            supervisorDropdown.innerHTML =
+              '<option value="" disabled selected>Select Supervisor</option>';
+            if (data && data.length > 0) {
+              data.forEach((supervisor) => {
+                const option = document.createElement("option");
+                option.value = supervisor;
+                option.textContent = supervisor;
+                supervisorDropdown.appendChild(option);
+              });
+            } else {
+              const option = document.createElement("option");
+              option.value = "";
+              option.textContent = "No supervisors found";
+              supervisorDropdown.appendChild(option);
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching supervisors:", error);
+            supervisorDropdown.innerHTML =
+              '<option value="">Error loading supervisors</option>';
+          });
+      }
+
+      populateSupervisorDropdown();
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        message.textContent = "⏳ Submitting...";
+
+        const formData = new FormData(form);
+        formData.append("action", "submitData");
+
+        fetch(SCRIPT_URL, {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.text())
+          .then((result) => {
+            message.textContent = "✅ Form submitted successfully!";
+            form.reset();
+            populateSupervisorDropdown();
+          })
+          .catch((error) => {
+            message.textContent = "❌ Error submitting form. Try again.";
+            console.error("Error!", error);
+          });
+      });
+
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const coords =
+                position.coords.latitude + ", " + position.coords.longitude;
+              document.getElementById("location").value = coords;
+            },
+            (error) => {
+              alert("⚠️ Error getting location: " + error.message);
+            }
+          );
+        } else {
+          alert("❌ Geolocation is not supported by this browser.");
         }
-      );
-    } else {
-      alert("❌ Geolocation is not supported by this browser.");
-    }
-  }
-</script>
+      }
 
-
-
-</body>
+      function logout() {
+        localStorage.removeItem("userLoggedIn");
+        alert("You have been logged out.");
+        window.location.href = "index.html";
+      }
+    </script>
+  </body>
 </html>

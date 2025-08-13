@@ -1,171 +1,420 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel - TEC Attendance</title>
-  <link rel="stylesheet" href="./css/Style.css">
-  <style>
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    table, th, td {
-      border: 1px solid #ccc;
-    }
-    th, td {
-      padding: 10px;
-      text-align: left;
-    }
-    .hidden {
-      display: none;
-    }
-  </style>
-</head>
-<body>
-  <div class="form-container">
-    <h2>Admin Dashboard - TEC Attendance</h2>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - TEC Attendance</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./images/favicon_32.png"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid #ccc;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+      }
+      .hidden {
+        display: none;
+      }
 
-    <button onclick="downloadCSV()">📥 Download Attendance Data</button>
-    <div class="form-section">
-  <h3>Create New User Account</h3>
-  <form id="create-user-form">
-    <label>Username</label>
-    <input type="text" name="Username" required>
+      .table-scroll {
+        overflow-x: auto;
+        width: 100%;
+      }
 
-    <label>Password</label>
-    <input type="password" name="Password" required>
+      #usersTable {
+        width: 100%;
+        min-width: 600px;
+        border-collapse: collapse;
+      }
 
-    <button type="submit">Create Account</button>
-  </form>
-  <p id="account-message"></p>
-</div>
+      #usersTable th,
+      #usersTable td {
+        white-space: nowrap;
+        box-sizing: border-box;
+        padding: 10px;
+        border: 1px solid #ccc;
+      }
 
-    <button onclick="showSubmissions()">📄 View Attendance Submissions</button>
-    <button onclick="logout()">🔓 Logout</button>
+      .admin-main {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px;
+        width: 100%;
+      }
 
-    <div id="usersTableContainer" class="hidden">
-      <h3>Registered Users</h3>
-      <table id="usersTable">
-        <thead>
-          <tr><th>UserID</th><th>Username</th><th>Role</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      .full-width-on-desktop {
+        width: 100%;
+        max-width: none;
+      }
+    </style>
+  </head>
+  <body class="admin-page">
+    <div class="admin-main">
+      <div class="admin-card">
+        <h2>Create User</h2>
+        <form id="registrationForm">
+          <label><b>Username</b></label>
+          <input type="text" name="username" required />
+          <label><b>Password</b></label>
+          <input type="password" name="password" required />
+          <label><b>Email</b></label>
+          <input type="email" name="email" required />
+          <label><b>Phone</b></label>
+          <input type="tel" name="phone" />
+          <button type="submit">Register</button>
+        </form>
+        <div id="statusMessage" class="message"></div>
+      </div>
+
+      <div class="admin-card">
+        <h2>Admin Actions</h2>
+        <button class="action-btn download" onclick="showUsers()">
+          👥 View Registered Users
+        </button>
+        <button id="downloadBtn" class="action-btn download">
+          📤 Download TEC Attendance
+        </button>
+        <p id="download-status"></p>
+        <button class="action-btn logout" onclick="logout()">🔓 Logout</button>
+      </div>
+                     
+      <div class="admin-card">
+                   
+        <h2>Manage Supervisors</h2>
+                   
+        <form id="addSupervisorForm">
+                          <label><b>Add Supervisor</b></label>                
+          <input
+            type="text"
+            id="newSupervisorName"
+            name="supervisorName"
+            required
+          />
+                          <button type="submit">Add Supervisor</button>        
+             
+        </form>
+                   
+        <div id="addSupervisorStatus" class="message"></div>
+
+                   
+        <div style="margin-top: 20px">
+                         
+          <h3>Current Supervisors</h3>
+                         
+          <ul id="supervisorsList" class="supervisors-list">
+                                               
+          </ul>
+                     
+        </div>
+               
+      </div>
+      <div id="usersTableContainer" class="full-width-on-desktop hidden">
+        <h3>
+          Registered Users
+          <button
+            onclick="closeRegisteredUsers()"
+            style="float: right; font-size: 14px; padding: 6px 12px"
+          >
+            Close
+          </button>
+        </h3>
+        <span id="deleteStatusMessage" class="message"></span>
+        <div class="table-scroll">
+          <table id="usersTable">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>password</th>
+                <th>email</th>
+                <th>phone</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <div id="submissionsTableContainer" class="hidden">
-      <h3>User Attendance Submissions</h3>
-      <table id="submissionsTable">
-        <thead>
-          <tr><th>Person Name</th><th>Project</th><th>Supervisor</th><th>Start Time</th><th>End Time</th><th>Location</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <button id="downloadBtn">📤 Download Attendance Data (CSV)</button>
-<p id="download-status"></p>
+    <script>
+      const SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbxgyl0UneWNJNtYKWdQFU0s7TBodPCNy04EHAXU2ctDt3DxRyH-3kOnQTFVY9kN45aZig/exec";
+      const SUPERVISOR_SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbywyV4NsN6pSLhiJgFSKZQsmH3c6PNN7BQ8QSmAQLnQ-VAGUcvNN8H0OQymo0MTY4Q/exec";
 
-  </div>
+      if (!localStorage.getItem("adminLoggedIn")) {
+        alert("Access denied. Login required.");
+        window.location.href = "admin-login.html";
+      }
 
-  <script>
-    // Protect page
-    if (!localStorage.getItem("adminLoggedIn")) {
-      alert("Access denied. Login required.");
-      window.location.href = "admin-login.html";
-    }
+      function logout() {
+        localStorage.removeItem("adminLoggedIn");
+        window.location.href = "admin-login.html";
+      }
 
-    function logout() {
-      localStorage.removeItem("adminLoggedIn");
-      window.location.href = "admin-login.html";
-    }
+      document
+        .getElementById("registrationForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const form = event.target;
+          const formData = new FormData(form);
+          formData.append("action", "register");
+          const statusDiv = document.getElementById("statusMessage");
+          statusDiv.textContent = "Registering...";
+          statusDiv.classList.remove("success", "error");
 
-    function downloadCSV() {
-      google.script.run.withSuccessHandler(function(url) {
-        window.open(url);
-      }).downloadAttendanceCSV();
-    }
+          fetch(SCRIPT_URL, {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              statusDiv.textContent = data.message;
+              if (data.message.includes("successfully")) {
+                statusDiv.classList.add("success");
+                form.reset();
+                showUsers();
+              } else {
+                statusDiv.classList.add("error");
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              statusDiv.textContent = "An unexpected error occurred.";
+              statusDiv.classList.add("error");
+            });
+        });
 
-    function showUsers() {
-      document.getElementById("usersTableContainer").classList.remove("hidden");
-      google.script.run.withSuccessHandler(function(users) {
+      function showUsers() {
+        const usersContainer = document.getElementById("usersTableContainer");
         const tbody = document.querySelector("#usersTable tbody");
-        tbody.innerHTML = "";
-        users.forEach(row => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td>`;
-          tbody.appendChild(tr);
-        });
-      }).getRegisteredUsers();
-    }
+        const deleteStatusDiv = document.getElementById("deleteStatusMessage");
 
-    function showSubmissions() {
-      document.getElementById("submissionsTableContainer").classList.remove("hidden");
-      google.script.run.withSuccessHandler(function(records) {
-        const tbody = document.querySelector("#submissionsTable tbody");
-        tbody.innerHTML = "";
-        records.forEach(row => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td>${row[5]}</td>`;
-          tbody.appendChild(tr);
-        });
-      }).getAttendanceSubmissions();
-    }
-  </script>
-  <script>
-  const downloadBtn = document.getElementById('downloadBtn');
-  const downloadStatus = document.getElementById('download-status');
+        if (!usersContainer.classList.contains("hidden")) {
+          usersContainer.classList.add("hidden");
+          return;
+        }
 
-  downloadBtn.addEventListener('click', () => {
-    downloadStatus.textContent = "⏳ Preparing download...";
+        usersContainer.classList.remove("hidden");
+        deleteStatusDiv.textContent = "";
+        tbody.innerHTML = "<tr><td colspan='5'>Loading users...</td></tr>";
 
-    // Replace with your deployed Apps Script web app URL
-    const downloadURL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?action=download';
+        const formData = new FormData();
+        formData.append("action", "getRegisteredUsers");
 
-    fetch(downloadURL)
-      .then(res => res.blob())
-      .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'AttendanceData.csv';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        downloadStatus.textContent = "✅ Download started!";
-      })
-      .catch(err => {
-        console.error('Error downloading:', err);
-        downloadStatus.textContent = "❌ Failed to download. Try again.";
+        fetch(SCRIPT_URL, {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((records) => {
+            tbody.innerHTML = "";
+            if (records && records.length > 0) {
+              records.forEach((row) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${row[0]}</td>
+                    <td>${row[1]}</td>
+                    <td>${row[2]}</td>
+                    <td>${row[3]}</td>
+                    <td>
+                        <button onclick="deleteUser('${row[0]}')" class="action-btn logout" style="padding: 5px 10px;">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+              });
+            } else {
+              tbody.innerHTML = "<tr><td colspan='5'>No users found.</td></tr>";
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching users:", error);
+            tbody.innerHTML =
+              "<tr><td colspan='5' class='error'>Failed to load data.</td></tr>";
+          });
+      }
+
+      function deleteUser(username) {
+        if (
+          !confirm(`Are you sure you want to delete the user "${username}"?`)
+        ) {
+          return;
+        }
+
+        const deleteStatusDiv = document.getElementById("deleteStatusMessage");
+        deleteStatusDiv.textContent = `Deleting user "${username}"...`;
+        deleteStatusDiv.classList.remove("success", "error");
+
+        const formData = new FormData();
+        formData.append("action", "deleteUser");
+        formData.append("username", username);
+
+        fetch(SCRIPT_URL, {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            deleteStatusDiv.textContent = data.message;
+            if (data.success) {
+              deleteStatusDiv.classList.add("success");
+              showUsers();
+            } else {
+              deleteStatusDiv.classList.add("error");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            deleteStatusDiv.textContent =
+              "An unexpected error occurred during deletion.";
+            deleteStatusDiv.classList.add("error");
+          });
+      }
+
+      function closeRegisteredUsers() {
+        document.getElementById("usersTableContainer").classList.add("hidden");
+      }
+
+      const downloadBtn = document.getElementById("downloadBtn");
+      const downloadStatus = document.getElementById("download-status");
+
+      downloadBtn.addEventListener("click", () => {
+        downloadStatus.textContent = "⏳ Preparing download...";
+
+        const formData = new FormData();
+        formData.append("action", "downloadCSV");
+
+        fetch(SCRIPT_URL, {
+          method: "POST",
+          body: formData,
+        })
+          .then((res) => res.blob())
+          .then((blob) => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "AttendanceData.csv";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            downloadStatus.textContent = "✅ Download started!";
+          })
+          .catch((err) => {
+            console.error("Error downloading:", err);
+            downloadStatus.textContent = "❌ Failed to download. Try again.";
+          });
       });
-  });
-</script>
-<script>
-  const accountForm = document.getElementById("create-user-form");
-  const accountMsg = document.getElementById("account-message");
 
-  accountForm.addEventListener("submit", function(e) {
-    e.preventDefault();
+      const addSupervisorForm = document.getElementById("addSupervisorForm");
+      const newSupervisorNameInput =
+        document.getElementById("newSupervisorName");
+      const addSupervisorStatusDiv = document.getElementById(
+        "addSupervisorStatus"
+      );
+      const supervisorsList = document.getElementById("supervisorsList");
 
-    const formData = new FormData(accountForm);
+      function fetchAndDisplaySupervisors() {
+        supervisorsList.innerHTML = "<li>Loading supervisors...</li>";
+        const formData = new FormData();
+        formData.append("action", "getSupervisors");
+        fetch(SUPERVISOR_SCRIPT_URL, {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            supervisorsList.innerHTML = "";
+            if (data && data.length > 0) {
+              data.forEach((supervisor) => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    <span>${supervisor}</span>
+                    <button class="action-btn logout" onclick="removeSupervisorFromList('${supervisor}')" style="padding: 5px 10px;">Remove</button>
+                `;
+                supervisorsList.appendChild(li);
+              });
+            } else {
+              supervisorsList.innerHTML = "<li>No supervisors found.</li>";
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching supervisors:", error);
+            supervisorsList.innerHTML = "<li>Failed to load supervisors.</li>";
+          });
+      }
 
-    fetch("https://script.google.com/macros/s/AKfycbw5uNOhsaJp3w3ZrA5aJItW-X3laz_6KpXXTs39UzWApAd9-4F0gCot38KmH_2MGzJZhw/exec", {
-      method: "POST",
-      body: formData
-    })
-    .then(res => res.text())
-    .then(response => {
-      accountMsg.textContent = "✅ Account created successfully!";
-      accountForm.reset();
-    })
-    .catch(error => {
-      accountMsg.textContent = "❌ Failed to create account.";
-      console.error("Error:", error);
-    });
-  });
-</script>
+      addSupervisorForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const supervisorName = newSupervisorNameInput.value.trim();
+        if (!supervisorName) return;
 
+        addSupervisorStatusDiv.textContent = "Adding...";
+        const formData = new FormData();
+        formData.append("action", "addSupervisor");
+        formData.append("supervisorName", supervisorName);
 
-</body>
+        fetch(SUPERVISOR_SCRIPT_URL, {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            addSupervisorStatusDiv.textContent = data.message;
+            if (data.success) {
+              fetchAndDisplaySupervisors();
+              newSupervisorNameInput.value = "";
+            }
+          })
+          .catch((error) => {
+            console.error("Error adding supervisor:", error);
+            addSupervisorStatusDiv.textContent = "An error occurred.";
+          });
+      });
+
+      function removeSupervisorFromList(supervisorName) {
+        if (!confirm(`Are you sure you want to remove "${supervisorName}"?`)) {
+          return;
+        }
+
+        addSupervisorStatusDiv.textContent = `Removing "${supervisorName}"...`;
+        const formData = new FormData();
+        formData.append("action", "removeSupervisor");
+        formData.append("supervisorName", supervisorName);
+
+        fetch(SUPERVISOR_SCRIPT_URL, {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            addSupervisorStatusDiv.textContent = data.message;
+            if (data.success) {
+              fetchAndDisplaySupervisors();
+            }
+          })
+          .catch((error) => {
+            console.error("Error removing supervisor:", error);
+            addSupervisorStatusDiv.textContent = "An error occurred.";
+          });
+      }
+
+      fetchAndDisplaySupervisors();
+    </script>
+  </body>
 </html>
