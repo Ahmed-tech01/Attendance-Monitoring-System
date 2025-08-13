@@ -525,7 +525,7 @@ body.admin-page::before {
   background-color: #e61d2b;
   color: white;
 }
-/* Sahi background image style for all pages */
+
 body {
     background: url('../images/logo.jpg') no-repeat center center fixed;
     background-size: cover;
@@ -537,7 +537,7 @@ body {
     color: #333;
 }
 
-/* Background ko thoda halka karne ke liye overlay */
+
 body::before {
     content: "";
     position: fixed;
@@ -547,4 +547,13 @@ body::before {
     height: 100%;
     background: rgba(255, 255, 255, 0.7); 
     z-index: -1;
+}
+
+
+body.admin-page {
+   
+    margin: 0;
+    padding: 0;
+    display: block;
+    background: rgba(255, 255, 255, 0.85); 
 }
