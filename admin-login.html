@@ -1,72 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Login</title>
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="./images/favicon_32.png"
-    />
-    <link rel="stylesheet" href="./css/Style.css" />
-  </head>
-  <body>
-    <div class="form-container">
-      <h2>Admin Login</h2>
-      <form id="admin-login-form">
-        <label>Username</label>
-        <input type="text" name="username" required />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon_32.png">
+  <link rel="stylesheet" href="./css/Style.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Admin Login</h2>
+    <form id="admin-login-form">
+      <label>Username</label>
+      <input type="text" name="username" required>
 
-        <label>Password</label>
-        <input type="password" name="password" required />
+      <label>Password</label>
+      <input type="password" name="password" required>
 
-        <button type="submit">Login</button>
-      </form>
-         
-      <div id="loginStatus" class="message"></div>
-      <p style="margin-top: 15px">
-        Not an admin? <a href="index.html">Go to User Login</a>
-      </p>
-    </div>
+      <button type="submit">Login</button>
+    </form>
+        <div id="loginStatus" class="message"></div>
+<p style="margin-top: 15px;">
+  Not an admin? <a href="index.html">Go to User Login</a>
+</p>
 
-    <script>
-      const SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbxgyl0UneWNJNtYKWdQFU0s7TBodPCNy04EHAXU2ctDt3DxRyH-3kOnQTFVY9kN45aZig/exec";
-      document
-        .getElementById("admin-login-form")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
-          const form = event.target;
-          const formData = new FormData(form);
-          formData.append("action", "adminLogin");
-          const statusDiv = document.getElementById("loginStatus");
-          statusDiv.textContent = "Logging in...";
-          statusDiv.classList.remove("success", "error");
+  </div>
 
-          fetch(SCRIPT_URL, {
-            method: "POST",
-            body: formData,
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.status === "success") {
-                statusDiv.textContent = data.message;
-                statusDiv.classList.add("success");
-                localStorage.setItem("adminLoggedIn", "true");
-                window.location.href = "admin-panel.html";
-              } else {
-                statusDiv.textContent = data.message;
-                statusDiv.classList.add("error");
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              statusDiv.textContent = "An unexpected error occurred.";
-              statusDiv.classList.add("error");
-            });
-        });
-    </script>
-  </body>
+<script>
+
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgyl0UneWNJNtYKWdQFU0s7TBodPCNy04EHAXU2ctDt3DxRyH-3kOnQTFVY9kN45aZig/exec';
+  
+  document.getElementById('admin-login-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    formData.append('action', 'adminLogin'); 
+    
+    const statusDiv = document.getElementById('loginStatus');
+    statusDiv.textContent = 'Logging in...';
+    statusDiv.classList.remove('success', 'error');
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        statusDiv.textContent = data.message;
+        statusDiv.classList.add('success');
+        localStorage.setItem("adminLoggedIn", "true");
+        window.location.href = "admin-panel.html";
+      } else {
+        statusDiv.textContent = data.message;
+        statusDiv.classList.add('error');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      statusDiv.textContent = 'An unexpected error occurred.';
+      statusDiv.classList.add('error');
+    });
+  });
+</script>
+
+</body>
 </html>

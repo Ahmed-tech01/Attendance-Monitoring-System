@@ -473,8 +473,8 @@ body.admin-page {
   color: #333;
 
 
-  background: url("/images/logo.jpg") no-repeat center center fixed;
-  background-size: cover;
+ background: url("../images/logo.jpg") no-repeat center center fixed;
+background-size: cover;
 }
 
 body.admin-page::before {
@@ -524,36 +524,4 @@ body.admin-page::before {
 #usersTable thead tr {
   background-color: #e61d2b;
   color: white;
-}
-
-body {
-    background: url('../images/logo.jpg') no-repeat center center fixed;
-    background-size: cover;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    color: #333;
-}
-
-
-body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.7); 
-    z-index: -1;
-}
-
-
-body.admin-page {
-   
-    margin: 0;
-    padding: 0;
-    display: block;
-    background: rgba(255, 255, 255, 0.85); 
 }
